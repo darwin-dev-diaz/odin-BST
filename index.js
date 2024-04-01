@@ -25,7 +25,7 @@ const createTree = (arr) => {
     return root;
   };
 
-  const root = buildTree(arr, 0, arr.length - 1);
+  let root = buildTree(arr, 0, arr.length - 1);
 
   const insert = (value, node = root) => {
     // base case: if the current nodes value is the same as value, just return
@@ -46,6 +46,73 @@ const createTree = (arr) => {
     else if (node.data < value) insert(value, node.right);
   };
 
+  const deleteItem = (value, node = root) => {
+    // base case: if node is a leaf node and doesn't contain the value return null
+    if (node.data !== value && !node.left && !node.right) return false;
+    // case one: if the node has a single child, replace the current node with this child
+    else if (
+      node.data === value &&
+      ((!node.left && node.right) || (node.left && !node.right))
+    ) {
+      const newNode = node.left ? node.left : node.right;
+      node.data = newNode.data;
+      if (node.left) node.left = newNode.left;
+      else node.right = newNode.right;
+      return true;
+    }
+    // case two: if the node is a leaf node just set it to null (this one searches ahead)
+    else if (
+      node.right.data === value &&
+      !node.right.left &&
+      !node.right.right
+    ) {
+      node.right = null;
+      return true;
+    } else if (
+      node.left.data === value &&
+      !node.left.left &&
+      !node.left.right
+    ) {
+      node.left = null;
+      return true;
+    }
+
+    // case three: if the node has two children, remove the next biggest value and update the key to the value
+    else if (node.data === value && node.left && node.right) {
+      // find the node with the next highest value
+      // remove that node,
+      // replace the current value with that one
+      let nextHighestNodeParent = node;
+      let iterations = 0;
+      while (true) {
+        if (
+          nextHighestNodeParent.right &&
+          !nextHighestNodeParent.right.left &&
+          !iterations
+        )
+          break;
+        else if (iterations > 1 && !nextHighestNodeParent.left.left) break;
+        else if (iterations >= 1) {
+          if (iterations === 1)
+            nextHighestNodeParent = nextHighestNodeParent.right;
+          else nextHighestNodeParent = nextHighestNodeParent.left;
+        }
+
+        iterations++;
+      }
+      // delete next highest node
+      if (!iterations) {
+        // when the next highest is the direct child
+        node.data = nextHighestNodeParent.right.data;
+        node.right = nextHighestNodeParent.right.right;
+      } else {
+        node.data = nextHighestNodeParent.left.data;
+        nextHighestNodeParent.left = null;
+      }
+      return true;
+    }
+  };
+
   const prettyPrint = (node = root, prefix = "", isLeft = true) => {
     if (node === null) {
       return;
@@ -59,18 +126,20 @@ const createTree = (arr) => {
     }
   };
 
-  return { root, prettyPrint, insert };
+  return { root, prettyPrint, insert, deleteItem };
 };
 
-// const tree = createTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-const tree = createTree([1, 2, 3, 4, 5, 6]);
+const tree = createTree([1, 2, 3, 4, 5, 8, 9, 20]);
+// const tree = createTree([1, 2, 3, 4, 5, 6]);
 tree.prettyPrint();
-tree.insert(3);
-tree.insert(2);
-tree.insert(11);
+tree.insert(10);
 tree.prettyPrint();
-
-// const arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
-// console.log(
-//   arr.sort((a, b) => a - b).filter((item, index) => arr.indexOf(item) === index)
-// );
+tree.deleteItem(4);
+tree.prettyPrint();
+tree.deleteItem(5);
+tree.prettyPrint();
+tree.deleteItem(8);
+tree.prettyPrint();
+tree.deleteItem(9);
+tree.prettyPrint();
+// tree.deleteItem(3);
