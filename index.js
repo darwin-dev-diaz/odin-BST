@@ -62,6 +62,7 @@ const createTree = (arr) => {
     }
     // case two: if the node is a leaf node just set it to null (this one searches ahead)
     else if (
+      node.right &&
       node.right.data === value &&
       !node.right.left &&
       !node.right.right
@@ -69,6 +70,7 @@ const createTree = (arr) => {
       node.right = null;
       return true;
     } else if (
+      node.left &&
       node.left.data === value &&
       !node.left.left &&
       !node.left.right
@@ -79,9 +81,6 @@ const createTree = (arr) => {
 
     // case three: if the node has two children, remove the next biggest value and update the key to the value
     else if (node.data === value && node.left && node.right) {
-      // find the node with the next highest value
-      // remove that node,
-      // replace the current value with that one
       let nextHighestNodeParent = node;
       let iterations = 0;
       while (true) {
@@ -100,17 +99,31 @@ const createTree = (arr) => {
 
         iterations++;
       }
-      // delete next highest node
       if (!iterations) {
-        // when the next highest is the direct child
         node.data = nextHighestNodeParent.right.data;
         node.right = nextHighestNodeParent.right.right;
+      } else if (nextHighestNodeParent.left.right) {
+        node.data = nextHighestNodeParent.left.data;
+        nextHighestNodeParent.left = nextHighestNodeParent.left.right;
       } else {
         node.data = nextHighestNodeParent.left.data;
         nextHighestNodeParent.left = null;
       }
       return true;
     }
+
+    if (node.left) deleteItem(value, node.left);
+    if (node.right) deleteItem(value, node.right);
+  };
+
+  const find = (value, node = root) => {
+    // base case is if the current node is equal to null
+    if (!node) return null;
+
+    if (node.data === value) return node;
+
+    const returnNode = find(value, node.left);
+    return returnNode ? returnNode : find(value, node.right);
   };
 
   const prettyPrint = (node = root, prefix = "", isLeft = true) => {
@@ -126,20 +139,15 @@ const createTree = (arr) => {
     }
   };
 
-  return { root, prettyPrint, insert, deleteItem };
+  return { root, prettyPrint, insert, deleteItem, find };
 };
 
-const tree = createTree([1, 2, 3, 4, 5, 8, 9, 20]);
+const tree = createTree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 // const tree = createTree([1, 2, 3, 4, 5, 6]);
+
+// tree.prettyPrint();
+tree.insert(5.5);
+tree.insert(7.1);
 tree.prettyPrint();
-tree.insert(10);
-tree.prettyPrint();
-tree.deleteItem(4);
-tree.prettyPrint();
-tree.deleteItem(5);
-tree.prettyPrint();
-tree.deleteItem(8);
-tree.prettyPrint();
-tree.deleteItem(9);
-tree.prettyPrint();
-// tree.deleteItem(3);
+
+console.log(tree.find(5));
