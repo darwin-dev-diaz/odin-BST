@@ -175,6 +175,9 @@ const createTree = (arr) => {
   };
 
   const height = (node = root, highest = 0) => {
+    // base case: if the node is null, return
+    if (!node) return highest;
+
     // base case: when the node is leaf, return
     if (!node.left && !node.right) return highest;
 
@@ -191,17 +194,31 @@ const createTree = (arr) => {
       !currentNode.left &&
       !currentNode.right &&
       currentNode.data !== node.data
-    ) {
-      console.log("leaf node that's not equal to node");
+    )
       return null;
-    }
-    // base case: if the currentNode is equal in value to the node, return the depth
+
+    // base case: if the currentNode is equal in value to the node
     if (currentNode.data === node.data) return depthN;
 
     // if the currentNodes value is greater than node's, search left, if not, search right.
     if (currentNode.data > node.data)
       return depth(node, currentNode.left, depthN + 1);
     else return depth(node, currentNode.right, depthN + 1);
+  };
+  const isBalanced = (node = root) => {
+    // base case: if its a leaf node say that it's balanced
+    if (!node.left && !node.right) return true;
+
+    // base case: if the heights of the left and right subtrees are not equal, return false
+    if (Math.abs(height(node.left) - height(node.right)) > 1) return false;
+
+    // call this function on the children. Return true if both children are balanced.
+    let rightIsBalanced = true;
+    let leftIsBalanced = true;
+
+    if (node.left) leftIsBalanced = isBalanced(node.left);
+    if (node.right) rightIsBalanced = isBalanced(node.right);
+    return leftIsBalanced && rightIsBalanced;
   };
 
   const prettyPrint = (node = root, prefix = "", isLeft = true) => {
@@ -229,15 +246,20 @@ const createTree = (arr) => {
     postOrder,
     height,
     depth,
+    isBalanced,
   };
 };
 
-const tree = createTree([5,6,7,8,3,4,6,9,11,33,7,99]);
-
+// const tree = createTree([5, 6, 7, 8, 3, 4, 6, 9, 11, 33, 7, 99]);
+const tree = createTree([5, 6, 7]);
+tree.insert(100);
+tree.insert(101);
+tree.insert(6.5)
+tree.insert(5.5)
+// tree.insert(12);
 
 tree.prettyPrint();
-// console.log(tree.postOrder((node)=>console.log(node.data * 2)));
-console.log(tree.depth());
+console.log(tree.isBalanced());
 
 // tree.levelOrder(function test(node) {
 //   console.log("The current nodes value doubled is: " + node.data * 2);
