@@ -144,6 +144,36 @@ const createTree = (arr) => {
     return returnArr;
   };
 
+  const preOrder = (callback = null, node = root, returnArr = []) => {
+    if (node) {
+      if(callback) callback(node);
+      returnArr.push(node.data)
+      preOrder(callback, node.left, returnArr);
+      preOrder(callback, node.right, returnArr);
+      return returnArr;
+    }
+  };
+
+  const inOrder = (callback = null, node = root, returnArr = []) => {
+    if (node) {
+      inOrder(callback, node.left, returnArr);
+      if(callback) callback(node);
+      returnArr.push(node.data)
+      inOrder(callback, node.right, returnArr);
+      return returnArr;
+    }
+  };
+
+  const postOrder = (callback = null, node = root, returnArr = []) => {
+    if (node) {
+      postOrder(callback, node.right, returnArr);
+      postOrder(callback, node.left, returnArr);
+      if(callback) callback(node);
+      returnArr.push(node.data)
+      return returnArr;
+    }
+  };
+
   const prettyPrint = (node = root, prefix = "", isLeft = true) => {
     if (node === null) {
       return;
@@ -157,10 +187,17 @@ const createTree = (arr) => {
     }
   };
 
-  return { root, prettyPrint, insert, deleteItem, find, levelOrder };
+  return { root, prettyPrint, insert, deleteItem, find, levelOrder, preOrder, inOrder, postOrder };
 };
 
-const tree = createTree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+const tree = createTree([1, 2, 3]);
+tree.insert(0.5);
+tree.insert(1.5);
+tree.insert(2.5);
+tree.insert(3.5);
+tree.insert(3.25);
+tree.insert(3.75);
+tree.insert(4);
 // const tree = createTree([1,2,3,4,5]);
 // const tree = createTree([
 //   "a",
@@ -179,8 +216,9 @@ const tree = createTree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
 // tree.prettyPrint();
 
-// tree.prettyPrint();
+tree.prettyPrint();
+console.log(tree.postOrder((node)=>console.log(node.data * 2)));
 
-tree.levelOrder(function test(node) {
-  console.log("The current nodes value doubled is: " + node.data * 2);
-});
+// tree.levelOrder(function test(node) {
+//   console.log("The current nodes value doubled is: " + node.data * 2);
+// });
