@@ -185,6 +185,24 @@ const createTree = (arr) => {
     // return the height of the highest side
     return heightLeft > heightRight ? heightLeft : heightRight;
   };
+  const depth = (node = root, currentNode = root, depthN = 0) => {
+    // base case: if the node is a leaf and not equal in value to the passed node
+    if (
+      !currentNode.left &&
+      !currentNode.right &&
+      currentNode.data !== node.data
+    ) {
+      console.log("leaf node that's not equal to node");
+      return null;
+    }
+    // base case: if the currentNode is equal in value to the node, return the depth
+    if (currentNode.data === node.data) return depthN;
+
+    // if the currentNodes value is greater than node's, search left, if not, search right.
+    if (currentNode.data > node.data)
+      return depth(node, currentNode.left, depthN + 1);
+    else return depth(node, currentNode.right, depthN + 1);
+  };
 
   const prettyPrint = (node = root, prefix = "", isLeft = true) => {
     if (node === null) {
@@ -200,6 +218,7 @@ const createTree = (arr) => {
   };
 
   return {
+    root,
     prettyPrint,
     insert,
     deleteItem,
@@ -209,47 +228,16 @@ const createTree = (arr) => {
     inOrder,
     postOrder,
     height,
+    depth,
   };
 };
 
-const tree = createTree([5]);
-tree.insert(1.5);
-tree.insert(6);
-tree.insert(7);
-tree.insert(8);
-tree.insert(9);
-tree.insert(10);
-tree.insert(11);
-tree.insert(12);
-tree.insert(8.5);
-tree.insert(0.5);
-// tree.insert(1.5);
-// tree.insert(2.5);
-// tree.insert(3.5);
-// tree.insert(3.25);
-// tree.insert(3.75);
-// tree.insert(4);
-// const tree = createTree([1,2,3,4,5]);
-// const tree = createTree([
-//   "a",
-//   "b",
-//   "c",
-//   "d",
-//   "e",
-//   "f",
-//   "g",
-//   "h",
-//   "i",
-//   "j",
-//   "k",
-// ]);
-// const tree = createTree([1, 2, 3, 4, 5, 6]);
+const tree = createTree([5,6,7,8,3,4,6,9,11,33,7,99]);
 
-// tree.prettyPrint();
 
 tree.prettyPrint();
 // console.log(tree.postOrder((node)=>console.log(node.data * 2)));
-console.log(tree.height());
+console.log(tree.depth());
 
 // tree.levelOrder(function test(node) {
 //   console.log("The current nodes value doubled is: " + node.data * 2);
