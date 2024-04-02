@@ -221,6 +221,13 @@ const createTree = (arr) => {
     return leftIsBalanced && rightIsBalanced;
   };
 
+  const rebalance = () => {
+    // get array from the current tree. Sort it as well
+    const inOrderArray = inOrder(null, root).sort((a, b) => a - b);
+
+    root = buildTree(inOrderArray, 0, inOrderArray.length - 1);
+  };
+
   const prettyPrint = (node = root, prefix = "", isLeft = true) => {
     if (node === null) {
       return;
@@ -247,19 +254,28 @@ const createTree = (arr) => {
     height,
     depth,
     isBalanced,
+    rebalance,
   };
 };
 
-// const tree = createTree([5, 6, 7, 8, 3, 4, 6, 9, 11, 33, 7, 99]);
-const tree = createTree([5, 6, 7]);
+const tree = createTree([5, 6, 7, 8, 3, 4, 6, 9, 11, 33, 7, 99]);
+// const tree = createTree([5, 6, 7]);
 tree.insert(100);
 tree.insert(101);
-tree.insert(6.5)
-tree.insert(5.5)
-// tree.insert(12);
+tree.insert(102);
+tree.insert(103);
+tree.insert(104);
+tree.insert(105);
+tree.insert(106);
+// tree.insert(6.5);
+// tree.insert(5.5);
+// tree.insert(3);
 
 tree.prettyPrint();
 console.log(tree.isBalanced());
+tree.rebalance();
+console.log(tree.isBalanced());
+tree.prettyPrint();
 
 // tree.levelOrder(function test(node) {
 //   console.log("The current nodes value doubled is: " + node.data * 2);
