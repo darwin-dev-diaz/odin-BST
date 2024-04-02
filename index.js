@@ -258,25 +258,30 @@ const createTree = (arr) => {
   };
 };
 
-const tree = createTree([5, 6, 7, 8, 3, 4, 6, 9, 11, 33, 7, 99]);
-// const tree = createTree([5, 6, 7]);
-tree.insert(100);
-tree.insert(101);
-tree.insert(102);
-tree.insert(103);
-tree.insert(104);
-tree.insert(105);
-tree.insert(106);
-// tree.insert(6.5);
-// tree.insert(5.5);
-// tree.insert(3);
+const randomIntArrayInRange = (min, max, n = 1) =>
+  Array.from(
+    { length: n }, // this thing is pretending to be an array. that's cool.
+    () => Math.floor(Math.random() * (max - min + 1)) + min
+  );
 
-tree.prettyPrint();
-console.log(tree.isBalanced());
-tree.rebalance();
-console.log(tree.isBalanced());
-tree.prettyPrint();
+const array = randomIntArrayInRange(0, 100, 10);
 
-// tree.levelOrder(function test(node) {
-//   console.log("The current nodes value doubled is: " + node.data * 2);
-// });
+const tree = createTree(array);
+tree.prettyPrint();
+console.log("balanced:", tree.isBalanced());
+console.log("level order:", tree.levelOrder());
+console.log("pre order:", tree.preOrder());
+console.log("in order:", tree.inOrder());
+console.log("post order:", tree.postOrder());
+
+const newArr = randomIntArrayInRange(100, 200, 10);
+newArr.forEach((x) => tree.insert(x));
+tree.prettyPrint();
+console.log("balanced:", tree.isBalanced());
+tree.rebalance()
+tree.prettyPrint();
+console.log("balanced:", tree.isBalanced());
+console.log("level order:", tree.levelOrder());
+console.log("pre order:", tree.preOrder());
+console.log("in order:", tree.inOrder());
+console.log("post order:", tree.postOrder());
