@@ -16,7 +16,7 @@ const createTree = (arr) => {
       return null;
     }
 
-    const mid = Math.floor((start + end) / 2);
+    const mid = Math.ceil((start + end) / 2);
     const root = createNode(array[mid]);
 
     root.left = buildTree(array, start, mid - 1);
@@ -126,6 +126,24 @@ const createTree = (arr) => {
     return returnNode ? returnNode : find(value, node.right);
   };
 
+  const levelOrder = (callback = null, queue = [root], returnArr = []) => {
+    // goes through the tree breath first.
+    // If provided a call back function, calls the function with the current node as parameter
+    // returns list of breath first values
+    const node = queue.shift();
+    returnArr.push(node.data);
+
+    if (callback) callback(node);
+
+    if (node.left) queue.push(node.left);
+    if (node.right) queue.push(node.right);
+
+    if (queue.length) {
+      levelOrder(callback, queue, returnArr);
+    }
+    return returnArr;
+  };
+
   const prettyPrint = (node = root, prefix = "", isLeft = true) => {
     if (node === null) {
       return;
@@ -139,15 +157,30 @@ const createTree = (arr) => {
     }
   };
 
-  return { root, prettyPrint, insert, deleteItem, find };
+  return { root, prettyPrint, insert, deleteItem, find, levelOrder };
 };
 
 const tree = createTree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+// const tree = createTree([1,2,3,4,5]);
+// const tree = createTree([
+//   "a",
+//   "b",
+//   "c",
+//   "d",
+//   "e",
+//   "f",
+//   "g",
+//   "h",
+//   "i",
+//   "j",
+//   "k",
+// ]);
 // const tree = createTree([1, 2, 3, 4, 5, 6]);
 
 // tree.prettyPrint();
-tree.insert(5.5);
-tree.insert(7.1);
-tree.prettyPrint();
 
-console.log(tree.find(5));
+// tree.prettyPrint();
+
+tree.levelOrder(function test(node) {
+  console.log("The current nodes value doubled is: " + node.data * 2);
+});
